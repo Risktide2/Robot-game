@@ -1,3 +1,4 @@
+using System.IO;
 using UnityEngine;
 
 public class GrapplingGun : MonoBehaviour {
@@ -6,8 +7,11 @@ public class GrapplingGun : MonoBehaviour {
     private Vector3 grapplePoint;
     public LayerMask whatIsGrappleable;
     public Transform gunTip, camera, player;
-    private float maxDistance = 100f;
+    public float maxDistance = 100f;
     private SpringJoint joint;
+    public float spring;
+    public float mass;
+    public float damp;
 
     void Awake() {
         lr = GetComponent<LineRenderer>();
@@ -41,13 +45,14 @@ public class GrapplingGun : MonoBehaviour {
             float distanceFromPoint = Vector3.Distance(player.position, grapplePoint);
 
             //The distance grapple will try to keep from grapple point. 
-            joint.maxDistance = distanceFromPoint * 0.8f;
-            joint.minDistance = distanceFromPoint * 0.25f;
+            joint.maxDistance = distanceFromPoint * 0f;
+            joint.minDistance = distanceFromPoint * 0f;
+            Debug.Log(joint.currentForce);
 
             //Adjust these values to fit your game.
-            joint.spring = 4.5f;
-            joint.damper = 7f;
-            joint.massScale = 4.5f;
+            joint.spring = spring;
+            joint.damper = damp;
+            joint.massScale = mass;
 
             lr.positionCount = 2;
             currentGrapplePosition = gunTip.position;
