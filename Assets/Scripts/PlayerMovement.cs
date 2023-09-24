@@ -234,7 +234,8 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     private bool cancellingGrounded;
-    
+    internal bool freeze;
+
     /// <summary>
     /// Handle ground detection
     /// </summary>
@@ -266,5 +267,9 @@ public class PlayerMovement : MonoBehaviour {
     private void StopGrounded() {
         grounded = false;
     }
-    
+
+    internal void JumpToPosition(Vector3 grapplePoint, float highestPointOnArc)
+    {
+        throw new NotImplementedException();
+    }
 }
