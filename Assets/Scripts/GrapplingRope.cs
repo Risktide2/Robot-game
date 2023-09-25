@@ -1,12 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class GrapplingRope : MonoBehaviour {
-    private Spring spring;
-    private LineRenderer lr;
-    private Vector3 currentGrapplePosition;
+/*
+ * This class handles the visuals of the rope for the grappling gun
+ */
+public class GrapplingRope : MonoBehaviour
+{
     public GrapplingGun grapplingGun;
+
     public int quality;
     public float damper;
     public float strength;
@@ -14,49 +14,76 @@ public class GrapplingRope : MonoBehaviour {
     public float waveCount;
     public float waveHeight;
     public AnimationCurve affectCurve;
-    
-    void Awake() {
-        lr = GetComponent<LineRenderer>();
-        spring = new Spring();
-        spring.SetTarget(0);
+
+    private CustomSpring _spring;
+    private LineRenderer _lineRenderer;
+    private Vector3 _currentGrapplePosition = Vector3.zero;
+
+    private void Awake()
+    {
+        _lineRenderer = GetComponent<LineRenderer>();
+        _spring = new CustomSpring();
+        _spring.SetTarget(0);
     }
-    
+
     //Called after Update
-    void LateUpdate() {
+    private void LateUpdate()
+    {
         DrawRope();
     }
 
-    void DrawRope() {
+    private void DrawRope()
+    {
         //If not grappling, don't draw rope
-        if (!grapplingGun.IsGrappling()) {
-            currentGrapplePosition = grapplingGun.gunTip.position;
-            spring.Reset();
-            if (lr.positionCount > 0)
-                lr.positionCount = 0;
+        if (!grapplingGun.IsGrappling())
+        {
+            _currentGrapplePosition = grapplingGun.gunTip.position;
+            _spring.Reset();
+            _lineRenderer.positionCount = 0;
             return;
         }
 
-        if (lr.positionCount == 0) {
-            spring.SetVelocity(velocity);
-            lr.positionCount = quality + 1;
+        //Init points for drawing if empty
+        if (_lineRenderer.positionCount == 0)
+        {
+            _spring.SetVelocity(velocity);
+            _lineRenderer.positionCount = quality;
         }
-        
-        spring.SetDamper(damper);
-        spring.SetStrength(strength);
-        spring.Update(Time.deltaTime);
 
-        var grapplePoint = grapplingGun.GetGrapplePoint();
-        var gunTipPosition = grapplingGun.gunTip.position;
-        var up = Quaternion.LookRotation((grapplePoint - gunTipPosition).normalized) * Vector3.up;
+        //Update the spring
+        _spring.SetDamper(damper);
+        _spring.SetStrength(strength);
+        _spring.Update(Time.deltaTime);
 
-        currentGrapplePosition = Vector3.Lerp(currentGrapplePosition, grapplePoint, Time.deltaTime * 12f);
+        //points from the grapple gun
+        Vector3 grapplePoint = grapplingGun.GetGrapplePoint();
+        Vector3 gunTipPosition = grapplingGun.GetGunTip();
+        Vector3 grappleDirection = (grapplePoint - gunTipPosition).normalized;
+        Vector3 waveUp = Quaternion.LookRotation(grappleDirection) * Vector3.up;
 
-        for (var i = 0; i < quality + 1; i++) {
-            var delta = i / (float) quality;
-            var offset = up * waveHeight * Mathf.Sin(delta * waveCount * Mathf.PI) * spring.Value *
-                         affectCurve.Evaluate(delta);
-            
-            lr.SetPosition(i, Vector3.Lerp(gunTipPosition, currentGrapplePosition, delta) + offset);
-        }
+        //The point of the end of the rope
+        _currentGrapplePosition = Vector3.Lerp(_currentGrapplePosition, grapplePoint, Time.deltaTime * 12f);
+
+        //Update each point along the rope
+        Vector3[] points = new Vector3[_lineRenderer.positionCount];
+        for (var i = 0; i < points.Length; i++)
+            points[i] = GetRopePoint(gunTipPosition, _currentGrapplePosition, waveUp, i);
+
+        //Update all the rope points
+        _lineRenderer.SetPositions(points);
+    }
+
+    private Vector3 GetRopePoint(Vector3 gunTipPosition, Vector3 currentGrapplePosition, Vector3 waveUp, int index)
+    {
+        //How far through the rope this point is
+        float percent = index / (float)(quality - 1);
+        //The raw value from the sine wave
+        float waveFactor = Mathf.Sin(percent * waveCount * 2 * Mathf.PI);
+        //The height of the sine wave
+        float waveAmplitude = waveHeight * _spring.Value * affectCurve.Evaluate(percent);
+        //The vector offset of the rope point from line
+        Vector3 offset = waveFactor * waveAmplitude * waveUp;
+        //The point on line + offset
+        return Vector3.Lerp(gunTipPosition, currentGrapplePosition, percent) + offset;
     }
 }
