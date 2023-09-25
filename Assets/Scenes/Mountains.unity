@@ -1080,7 +1080,7 @@ MonoBehaviour:
   gunTip: {fileID: 1532238922}
   camera: {fileID: 501641840}
   player: {fileID: 1874409894}
-  maxDistance: 100000
+  maxDistance: 100
   spring: 7
   mass: 6
   damp: 2
@@ -2496,8 +2496,16 @@ PrefabInstance:
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3336150040765903643, guid: 74ae47fed8d5c734e803e20058de867c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.356
+      objectReference: {fileID: 0}
+    - target: {fileID: 3336150040765903643, guid: 74ae47fed8d5c734e803e20058de867c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.44
+      value: -0.359
+      objectReference: {fileID: 0}
+    - target: {fileID: 3336150040765903643, guid: 74ae47fed8d5c734e803e20058de867c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.835
       objectReference: {fileID: 0}
     - target: {fileID: 3663682237816102973, guid: 74ae47fed8d5c734e803e20058de867c, type: 3}
       propertyPath: m_Enabled
