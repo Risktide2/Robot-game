@@ -295,13 +295,13 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   maxSlopeAngle: 35
-  moveSpeed: 1000
+  moveSpeed: 3000
   maxSpeed: 20
   counterMovement: 0.175
   slideForce: 400
   slideCounterMovement: 0.2
   jumpCooldown: 0.25
-  jumpForce: 550
+  jumpForce: 3000
   sensitivity: 50
   sensMultiplier: 1
 --- !u!114 &6901772996766308317
