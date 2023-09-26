@@ -5,11 +5,12 @@ using UnityEngine;
  */
 public class GrapplingGun : MonoBehaviour
 {
-    [Header("Settings")] public float maxDistance = 100f;
+    [Header("Settings")] 
+    [SerializeField] private float maxDistance = 100f;
     [SerializeField] private float spring;
-    [SerializeField] private  float mass;
-    [SerializeField] private  float damp;
-    [SerializeField] private  LayerMask whatIsGrappleable;
+    [SerializeField] private float mass;
+    [SerializeField] private float damp;
+    [SerializeField] private LayerMask whatIsGrappleable;
 
     [Header("References")] public Transform gunTip;
     public new Transform camera;

@@ -1,111 +1,122 @@
-﻿
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 
 public class EnemyAiTutorial : MonoBehaviour
 {
-    public NavMeshAgent agent;
+    [Header("Settings")] 
+    [SerializeField] private float sightRange;
+    [SerializeField] private float attackRange;
+    [SerializeField] private LayerMask whatIsGround;
 
-    public Transform player;
+    [Header("Patrol")]
+    [SerializeField] private float walkPointRange;
 
-    public LayerMask whatIsGround, whatIsPlayer;
+    [SerializeField] private Transform seePoint;
 
-    public float health;
-
-    //Patroling
-    public Vector3 walkPoint;
-    bool walkPointSet;
-    public float walkPointRange;
-
-    //Attacking
-    public float timeBetweenAttacks;
-    bool alreadyAttacked;
-    public GameObject projectile;
-
-    //States
-    public float sightRange, attackRange;
-    public bool playerInSightRange, playerInAttackRange;
+    [Header("Attacking")]
+    [SerializeField] private float timeBetweenAttacks;
+    [SerializeField] private GameObject projectile;
+    
+    private bool _alreadyAttacked;
+    private bool _walkPointSet;
+    private bool _playerInSightRange;
+    private bool _playerInAttackRange;
+    private Vector3 _walkPoint;
+    private Transform _player;
+    private NavMeshAgent _agent;
 
     private void Awake()
     {
-        player = GameObject.Find("PlayerObj").transform;
-        agent = GetComponent<NavMeshAgent>();
+        _agent = GetComponent<NavMeshAgent>();
     }
 
     private void Update()
     {
-        //Check for sight and attack range
-        playerInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsPlayer);
-        playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
+        //Dont do anything if no players
+        if (Player.Instances == null || Player.Instances.Count == 0)
+            return;
+        
+        //Pick on the unlucky first player
+        _player = Player.GetClosest(transform.position).transform;
 
-        if (!playerInSightRange && !playerInAttackRange) Patroling();
-        if (playerInSightRange && !playerInAttackRange) ChasePlayer();
-        if (playerInAttackRange && playerInSightRange) AttackPlayer();
+        //Check for sight and attack range
+        float distanceToPlayer = Vector3.Distance(_player.transform.position, seePoint.position);
+        _playerInSightRange = distanceToPlayer < sightRange;
+        _playerInAttackRange = distanceToPlayer < attackRange;
+        
+        //Assuming sight range is larger than attack range
+        if (_playerInSightRange)
+        {
+            Debug.Log("IM COMING FOR YOU CHILD");
+            if (_playerInAttackRange)
+                AttackPlayer();
+            else
+                ChasePlayer();
+        }
+        else
+        {
+            Patrol();
+        }
     }
 
-    private void Patroling()
+    private void Patrol()
     {
-        if (!walkPointSet) SearchWalkPoint();
+        if (!_walkPointSet)
+        {
+            SearchWalkPoint();
+            return;
+        }
+        
+        if (_walkPointSet)
+            _agent.SetDestination(_walkPoint);
 
-        if (walkPointSet)
-            agent.SetDestination(walkPoint);
-
-        Vector3 distanceToWalkPoint = transform.position - walkPoint;
-
-        //Walkpoint reached
-        if (distanceToWalkPoint.magnitude < 1f)
-            walkPointSet = false;
+        //Check if close to walk point
+        float distanceToWalkPoint = Vector3.Distance(transform.position, _walkPoint);
+        if (distanceToWalkPoint < 1f)
+            _walkPointSet = false;
     }
     private void SearchWalkPoint()
     {
-        //Calculate random point in range
-        float randomZ = Random.Range(-walkPointRange, walkPointRange);
-        float randomX = Random.Range(-walkPointRange, walkPointRange);
-
-        walkPoint = new Vector3(transform.position.x + randomX, transform.position.y, transform.position.z + randomZ);
-
-        if (Physics.Raycast(walkPoint, -transform.up, 2f, whatIsGround))
-            walkPointSet = true;
+        //Calculate random direction to walk in range
+        float angle = Random.Range(0, 2 * Mathf.PI); //Random angle
+        float distance = Random.Range(0, walkPointRange); //Random distance
+        Vector3 direction = new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)); //Direction from angle
+        _walkPoint = transform.position + direction * distance; //Bada bing bada boom, walkPoint
+        
+        //Check that walk point is actually walkable
+        Vector3 raycastPoint = _walkPoint + Vector3.up * 5f;
+        if (Physics.Raycast(raycastPoint, -transform.up, 10f, whatIsGround))
+            _walkPointSet = true;
     }
 
     private void ChasePlayer()
     {
-        agent.SetDestination(player.position);
+        _agent.SetDestination(_player.position);
     }
 
     private void AttackPlayer()
     {
         //Make sure enemy doesn't move
-        agent.SetDestination(transform.position);
+        _agent.SetDestination(transform.position);
+        
+        //I can see you...
+        transform.LookAt(_player);
 
-        transform.LookAt(player);
-
-        if (!alreadyAttacked)
+        if (!_alreadyAttacked)
         {
-            ///Attack code here
+            //Attack code here
             Rigidbody rb = Instantiate(projectile, transform.position, Quaternion.identity).GetComponent<Rigidbody>();
             rb.AddForce(transform.forward * 32f, ForceMode.Impulse);
             rb.AddForce(transform.up * 8f, ForceMode.Impulse);
-            ///End of attack code
+            //End of attack code
 
-            alreadyAttacked = true;
+            _alreadyAttacked = true;
             Invoke(nameof(ResetAttack), timeBetweenAttacks);
         }
     }
     private void ResetAttack()
     {
-        alreadyAttacked = false;
-    }
-
-    public void TakeDamage(int damage)
-    {
-        health -= damage;
-
-        if (health <= 0) Invoke(nameof(DestroyEnemy), 0.5f);
-    }
-    private void DestroyEnemy()
-    {
-        Destroy(gameObject);
+        _alreadyAttacked = false;
     }
 
     private void OnDrawGizmosSelected()

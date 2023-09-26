@@ -6,6 +6,8 @@ public class Health : MonoBehaviour
 {
     [SerializeField] private int maxHealth = 100;
     [SerializeField] private Slider healthBar;
+    [SerializeField] private float deathDelay = 0.5f;
+    
     public UnityEvent die;
 
     //The amount of health the player has currently
@@ -31,6 +33,13 @@ public class Health : MonoBehaviour
         //Update the health bar UI
         healthBar.value = _currentHealth;
 
-        if (_currentHealth <= 0) die?.Invoke();
+        if (_currentHealth <= 0) 
+            Invoke(nameof(Die), deathDelay);
+    }
+
+    private void Die()
+    {
+        die?.Invoke();
+        Destroy(gameObject);
     }
 }
