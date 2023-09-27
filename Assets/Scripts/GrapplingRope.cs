@@ -1,19 +1,22 @@
 ﻿using UnityEngine;
 
 /*
- * This class handles the visuals of the rope for the grappling gun
+ * Handles the visuals of the rope for the grappling gun
  */
 public class GrapplingRope : MonoBehaviour
 {
+    [Header("References")]
     public GrapplingGun grapplingGun;
-
-    public int quality;
-    public float damper;
-    public float strength;
-    public float velocity;
-    public float waveCount;
-    public float waveHeight;
-    public AnimationCurve affectCurve;
+    
+    [Space(10)]
+    [Header("Settings")]
+    [SerializeField] private int quality;
+    [SerializeField] private float damper;
+    [SerializeField] private float strength;
+    [SerializeField] private float velocity;
+    [SerializeField] private float waveCount;
+    [SerializeField] private float waveHeight;
+    [SerializeField] private AnimationCurve affectCurve;
 
     private CustomSpring _spring;
     private LineRenderer _lineRenderer;
@@ -23,7 +26,7 @@ public class GrapplingRope : MonoBehaviour
     {
         _lineRenderer = GetComponent<LineRenderer>();
         _spring = new CustomSpring();
-        _spring.SetTarget(0);
+        _spring.RestLength = 0;
     }
 
     //Called after Update
@@ -46,18 +49,21 @@ public class GrapplingRope : MonoBehaviour
         //Init points for drawing if empty
         if (_lineRenderer.positionCount == 0)
         {
-            _spring.SetVelocity(velocity);
+            _spring.Velocity = velocity;
+            _spring.DampAmount = damper;
+            _spring.Stiffness = strength;
+            
             _lineRenderer.positionCount = quality;
         }
 
-        //Update the spring
-        _spring.SetDamper(damper);
-        _spring.SetStrength(strength);
+        
         _spring.Update(Time.deltaTime);
 
         //points from the grapple gun
         Vector3 grapplePoint = grapplingGun.GetGrapplePoint();
         Vector3 gunTipPosition = grapplingGun.GetGunTip();
+        
+        //directions for the grapple rope
         Vector3 grappleDirection = (grapplePoint - gunTipPosition).normalized;
         Vector3 waveUp = Quaternion.LookRotation(grappleDirection) * Vector3.up;
 
@@ -80,7 +86,7 @@ public class GrapplingRope : MonoBehaviour
         //The raw value from the sine wave
         float waveFactor = Mathf.Sin(percent * waveCount * 2 * Mathf.PI);
         //The height of the sine wave
-        float waveAmplitude = waveHeight * _spring.Value * affectCurve.Evaluate(percent);
+        float waveAmplitude = waveHeight * _spring.Length * affectCurve.Evaluate(percent);
         //The vector offset of the rope point from line
         Vector3 offset = waveFactor * waveAmplitude * waveUp;
         //The point on line + offset

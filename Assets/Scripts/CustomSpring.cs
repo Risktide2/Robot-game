@@ -1,51 +1,32 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// Alternative to the unity spring joint
+/// </summary>
 public class CustomSpring
 {
-    private float _strength;
-    private float _damper;
-    private float _target;
-    private float _velocity;
-    private float _value;
-
+    //Settings
+    public float Stiffness;
+    public float DampAmount;
+    public float RestLength;
+    
+    //State variables
+    public float Length;
+    public float Velocity;
+    
+    //Recalculates the spring force
     public void Update(float deltaTime)
     {
-        var direction = _target - _value >= 0 ? 1f : -1f;
-        var force = Mathf.Abs(_target - _value) * _strength;
-        _velocity += (force * direction - _velocity * _damper) * deltaTime;
-        _value += _velocity * deltaTime;
+        float direction = Mathf.Sign(RestLength - Length);
+        float restoringForce = Mathf.Abs(RestLength - Length) * Stiffness * direction;
+        float dampingForce = -Velocity * DampAmount;
+        Velocity += (restoringForce + dampingForce) * deltaTime;
+        Length += Velocity * deltaTime;
     }
 
     public void Reset()
     {
-        _velocity = 0f;
-        _value = 0f;
+        Velocity = 0f;
+        Length = 0f;
     }
-
-    public void SetValue(float value)
-    {
-        _value = value;
-    }
-
-    public void SetTarget(float target)
-    {
-        _target = target;
-    }
-
-    public void SetDamper(float damper)
-    {
-        _damper = damper;
-    }
-
-    public void SetStrength(float strength)
-    {
-        _strength = strength;
-    }
-
-    public void SetVelocity(float velocity)
-    {
-        _velocity = velocity;
-    }
-
-    public float Value => _value;
 }
