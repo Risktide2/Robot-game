@@ -20,9 +20,9 @@ public class GrapplingGun : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.Q))
             StartGrapple();
-        else if (Input.GetKeyUp(KeyCode.E)) StopGrapple();
+        else if (Input.GetKeyUp(KeyCode.Q)) StopGrapple();
     }
 
     /// <summary>
