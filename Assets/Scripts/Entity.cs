@@ -1,19 +1,19 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
-//This class mostly just helps other classes have a link to the player gameobject without using
+//This class mostly just helps other classes have a link to entity's gameobjects without using
 //GameObject.Find() which is VERY slow and should never be used
-public class Player : MonoBehaviour
+//Would have called it Entity, but that is already taken by Unity
+public class Thing : MonoBehaviour
 {
     //Enemies can use this to know where the players are
-    public static readonly List<Player> Instances = new();
+    public static readonly List<Thing> Instances = new();
 
     //Gets the player closest to a given point
-    public static Player GetClosest(Vector3 point)
+    public static Thing GetClosest(Vector3 point)
     {
         float min = float.MaxValue;
-        Player theChosen = null;
+        Thing theChosen = null;
 
         foreach(var player in Instances)
         {
@@ -28,7 +28,7 @@ public class Player : MonoBehaviour
         return theChosen;
     }
     
-    //Initialize the list if it hasnt been already and add this player to it
+    //Add this player to the list
     private void Awake()
     {
         Instances.Add(this);
