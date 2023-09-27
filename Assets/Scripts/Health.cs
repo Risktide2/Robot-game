@@ -1,37 +1,32 @@
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
 
+/// <summary>
+/// Basic health script, takes damage and dies
+/// </summary>
 public class Health : MonoBehaviour
 {
-    [SerializeField] private int maxHealth = 100;
-    [SerializeField] private Slider healthBar;
-    [SerializeField] private float deathDelay = 0.5f;
+    [SerializeField] protected int maxHealth = 100;
+    [SerializeField] protected float deathDelay = 0.5f;
     
     public UnityEvent die;
 
     //The amount of health the player has currently
-    private int _currentHealth;
+    protected float _currentHealth;
 
     // Start is called before the first frame update
-    private void Start()
+    protected virtual void Start()
     {
         //Start player with max health
         _currentHealth = maxHealth;
-
-        //Setup the health bar UI
-        healthBar.maxValue = maxHealth;
-        healthBar.minValue = 0;
-        healthBar.value = maxHealth;
-        healthBar.wholeNumbers = false;
     }
 
-    public void TakeDamage(int damage)
+    public virtual void TakeDamage(float damage)
     {
         //Reduce the player health by damage
         _currentHealth -= damage;
-        //Update the health bar UI
-        healthBar.value = _currentHealth;
+        
+        Debug.Log("Ouch!");
 
         if (_currentHealth <= 0) 
             Invoke(nameof(Die), deathDelay);

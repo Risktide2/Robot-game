@@ -32,11 +32,11 @@ public class BasicEnemyPathFinding : MonoBehaviour
     private void Update()
     {
         //Dont do anything if no players
-        if (Thing.Instances == null || Thing.Instances.Count == 0)
+        if (Entity.Instances == null || Entity.Instances.Count == 0)
             return;
         
         //Pick on the unlucky first Entity
-        _player = Thing.GetClosest(transform.position).transform;
+        _player = Entity.GetClosest(transform.position).transform;
 
         //Check for sight and attack range
         float distanceToPlayer = Vector3.Distance(_player.transform.position, seePoint.position);

@@ -43,7 +43,6 @@ public class GrapplingGun : MonoBehaviour
             //The distance grapple will try to keep from grapple point. 
             _joint.maxDistance = distanceFromPoint * 0f;
             _joint.minDistance = distanceFromPoint * 0f;
-            Debug.Log(_joint.currentForce);
 
             //Adjust these values to fit your game.
             _joint.spring = spring;

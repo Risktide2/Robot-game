@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 
 /*
- * Handles the visuals of the rope for the grappling gun
+ * Handles the visuals of the rope for the grappling gun.
+ * sort of a scripted animation for the lineRenderer of the grapple gun.
  */
 public class GrapplingRope : MonoBehaviour
 {
@@ -20,43 +21,44 @@ public class GrapplingRope : MonoBehaviour
 
     private CustomSpring _spring;
     private LineRenderer _lineRenderer;
+    
+    //This is the point that 'shoots out' of the gun tip to the grapple point
     private Vector3 _currentGrapplePosition = Vector3.zero;
+
+    private bool _isDrawing;
 
     private void Awake()
     {
         _lineRenderer = GetComponent<LineRenderer>();
-        _spring = new CustomSpring();
-        _spring.RestLength = 0;
+        
+        //Create and initialize the spring
+        _spring = new CustomSpring
+        {
+            DampAmount = damper,
+            Stiffness = strength,
+            Velocity = velocity,
+            RestLength = 0,
+            Length = 0
+        };
     }
 
     //Called after Update
     private void LateUpdate()
     {
+        //If not grappling, don't draw rope
+        if (!grapplingGun.IsGrappling())
+        {
+            if(_isDrawing) StopDrawing();
+            return;
+        }
+        //Init points for drawing
+        if (!_isDrawing) StartDrawing();
+        
         DrawRope();
     }
 
     private void DrawRope()
     {
-        //If not grappling, don't draw rope
-        if (!grapplingGun.IsGrappling())
-        {
-            _currentGrapplePosition = grapplingGun.gunTip.position;
-            _spring.Reset();
-            _lineRenderer.positionCount = 0;
-            return;
-        }
-
-        //Init points for drawing if empty
-        if (_lineRenderer.positionCount == 0)
-        {
-            _spring.Velocity = velocity;
-            _spring.DampAmount = damper;
-            _spring.Stiffness = strength;
-            
-            _lineRenderer.positionCount = quality;
-        }
-
-        
         _spring.Update(Time.deltaTime);
 
         //points from the grapple gun
@@ -91,5 +93,19 @@ public class GrapplingRope : MonoBehaviour
         Vector3 offset = waveFactor * waveAmplitude * waveUp;
         //The point on line + offset
         return Vector3.Lerp(gunTipPosition, currentGrapplePosition, percent) + offset;
+    }
+
+    private void StopDrawing()
+    {
+        _isDrawing = false;
+        _lineRenderer.positionCount = 0;
+        _spring.Reset();
+    }
+
+    private void StartDrawing()
+    {
+        _isDrawing = true;
+        _lineRenderer.positionCount = quality;
+        _currentGrapplePosition = grapplingGun.gunTip.position;
     }
 }
