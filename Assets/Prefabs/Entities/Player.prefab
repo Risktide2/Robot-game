@@ -301,7 +301,7 @@ MonoBehaviour:
   slideForce: 400
   slideCounterMovement: 0.2
   jumpCooldown: 0.25
-  jumpForce: 3000
+  jumpForce: 300
   sensitivity: 50
   sensMultiplier: 1
 --- !u!114 &6901772996766308317
@@ -318,6 +318,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   healthBar: {fileID: 2243186551034547414}
+  deathDelay: 0.5
   die:
     m_PersistentCalls:
       m_Calls: []
