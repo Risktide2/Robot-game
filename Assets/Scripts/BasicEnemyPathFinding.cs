@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
 
-public class EnemyAiTutorial : MonoBehaviour
+public class BasicEnemyPathFinding : MonoBehaviour
 {
     [Header("Settings")] 
     [SerializeField] private float sightRange;
@@ -10,7 +10,6 @@ public class EnemyAiTutorial : MonoBehaviour
 
     [Header("Patrol")]
     [SerializeField] private float walkPointRange;
-
     [SerializeField] private Transform seePoint;
 
     [Header("Attacking")]
@@ -33,11 +32,11 @@ public class EnemyAiTutorial : MonoBehaviour
     private void Update()
     {
         //Dont do anything if no players
-        if (Player.Instances == null || Player.Instances.Count == 0)
+        if (Thing.Instances == null || Thing.Instances.Count == 0)
             return;
         
-        //Pick on the unlucky first player
-        _player = Player.GetClosest(transform.position).transform;
+        //Pick on the unlucky first Entity
+        _player = Thing.GetClosest(transform.position).transform;
 
         //Check for sight and attack range
         float distanceToPlayer = Vector3.Distance(_player.transform.position, seePoint.position);
