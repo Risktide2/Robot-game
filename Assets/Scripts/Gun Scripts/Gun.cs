@@ -3,9 +3,10 @@ using UnityEngine;
 
 public class Gun : MonoBehaviour
 {
-    public UnityEvent OnGunShoot;
+    [Header("Settings")]
     public float FireCooldown;
 
+    public UnityEvent OnGunShoot;
 
     // By defult gun is semi
     public bool Automatic;

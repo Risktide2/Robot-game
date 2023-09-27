@@ -1,7 +1,7 @@
 using UnityEngine;
 
 /*
- * This class handles the visuals of the rope for the grappling gun
+ * Handles the visuals of the rope for the grappling gun
  */
 public class GrapplingGun : MonoBehaviour
 {

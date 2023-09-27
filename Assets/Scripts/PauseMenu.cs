@@ -2,9 +2,12 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// Handles the in-game (player in a level, not main menu) pause menu input handling
+/// </summary>
 public class PauseMenu : MonoBehaviour
 {
-    private static bool _paused = false;
+    private static bool _paused;
     
     public UnityEvent<bool> pause;
     public UnityEvent<bool> pauseNot;

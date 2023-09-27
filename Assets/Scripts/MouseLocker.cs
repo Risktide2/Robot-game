@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 /*
@@ -13,13 +12,15 @@ public class MouseLocker : MonoBehaviour
     {
         Instance = this;
     }
-
+    
+    //Lock the cursor (mouse) and hide it
     private void OnEnable()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
     
+    //Unlock the cursor (mouse) and show it
     private void OnDisable()
     {
         Cursor.lockState = CursorLockMode.None;

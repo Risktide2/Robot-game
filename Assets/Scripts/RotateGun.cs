@@ -1,11 +1,14 @@
 using UnityEngine;
 
+/// <summary>
+/// This class handles rotating the grappling gun to face the direction of the grapple point (forward if not grappling)
+/// </summary>
 public class RotateGun : MonoBehaviour
 {
-    public GrapplingGun grappling;
+    [SerializeField] private GrapplingGun grappling;
+    [SerializeField] private float rotationSpeed = 5f;
 
     private Quaternion _desiredRotation;
-    private float _rotationSpeed = 5f;
 
     private void Update()
     {
@@ -14,6 +17,6 @@ public class RotateGun : MonoBehaviour
         else
             _desiredRotation = Quaternion.LookRotation(grappling.GetGrapplePoint() - transform.position);
 
-        transform.rotation = Quaternion.Lerp(transform.rotation, _desiredRotation, Time.deltaTime * _rotationSpeed);
+        transform.rotation = Quaternion.Lerp(transform.rotation, _desiredRotation, Time.deltaTime * rotationSpeed);
     }
 }
