@@ -194,6 +194,29 @@ PrefabInstance:
       insertIndex: 7
       addedObject: {fileID: 912152194}
   m_SourcePrefab: {fileID: 100100000, guid: 74ae47fed8d5c734e803e20058de867c, type: 3}
+--- !u!1 &266950349 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8072547011947676519, guid: 43c252f73564a02418ed8c23a48a3b2b, type: 3}
+  m_PrefabInstance: {fileID: 331429290}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &266950354
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 266950349}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5649d294ebd8a3143b4620df4d31a0c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
+  healthBar: {fileID: 0}
+  deathDelay: 0.5
+  die:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &331429290
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -202,6 +225,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4987909557831348639, guid: 43c252f73564a02418ed8c23a48a3b2b, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8072547011947676519, guid: 43c252f73564a02418ed8c23a48a3b2b, type: 3}
       propertyPath: m_Name
       value: Drone
@@ -249,7 +276,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8072547011947676519, guid: 43c252f73564a02418ed8c23a48a3b2b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 266950354}
   m_SourcePrefab: {fileID: 100100000, guid: 43c252f73564a02418ed8c23a48a3b2b, type: 3}
 --- !u!1 &912152186 stripped
 GameObject:
